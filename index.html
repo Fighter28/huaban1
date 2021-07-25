@@ -15,24 +15,36 @@
       canvas.height = document.documentElement.clientHeight;
       let ctx = canvas.getContext("2d");
       let patting = false;
-      canvas.onmousedown = () => {
-        patting = true;
-      };
-      ctx.fillStyle = "black";
-      ctx.strokeStyle = "none";
-      canvas.onmousemove = (e) => {
-        if (patting === true) {
+      let isTouchDevice = "ontouchstart" in document.documentElement;
+
+      if (isTouchDevice) {
+        canvas.ontouchmove = (e) => {
+          console.log(e);
+          let x = e.touches[0].clientX;
+          let y = e.touches[0].clientY;
           ctx.beginPath();
-          ctx.arc(e.clientX, e.clientY, 10, 0, 2 * Math.PI);
+          ctx.arc(x, y, 10, 0, 2 * Math.PI);
           ctx.stroke();
           ctx.fill();
-        } else {
-          console.log("啥也不做");
-        }
-      };
-      canvas.onmouseup = () => {
-        patting = false;
-      };
+        };
+      } else {
+        canvas.onmousedown = () => {
+          patting = true;
+        };
+        ctx.fillStyle = "black";
+        ctx.strokeStyle = "none";
+        canvas.onmousemove = (e) => {
+          if (patting === true) {
+            ctx.beginPath();
+            ctx.arc(e.clientX, e.clientY, 10, 0, 2 * Math.PI);
+            ctx.stroke();
+            ctx.fill();
+          }
+        };
+        canvas.onmouseup = () => {
+          patting = false;
+        };
+      }
     </script>
   </body>
 </html>
